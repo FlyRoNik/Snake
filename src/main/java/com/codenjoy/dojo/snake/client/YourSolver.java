@@ -33,26 +33,41 @@ public class YourSolver implements Solver<Board> {
         Point point_snake = board.getHead();
         Point point_app_kek = board.getStones().get(0);
 
-//        List<Point> point_snake_body = board.getSnake();
+        List<Point> point_snake_body = board.getSnake();
 
-//        int t = point_snake_body.size();
+        int x = point_snake.getX();
+        int y = point_snake.getY();
+
+        int t = point_snake_body.size();
+        if (t > 1) {
+            x = point_snake_body.get(t - 1).getX();
+            y = point_snake_body.get(t - 1).getY();
+        }
 
         String result = Direction.UP.toString();
 
         if (point_snake.getX() > point_app.getX()) {
-            result = Direction.LEFT.toString();
+            if (point_snake.getX() - 1 != y) {
+                result = Direction.LEFT.toString();
+            }
         }
 
         if (point_snake.getX() < point_app.getX()){
-            result =  Direction.RIGHT.toString();
+            if (point_snake.getX() + 1 != y) {
+                result =  Direction.RIGHT.toString();
+            }
         }
 
         if (point_snake.getY() > point_app.getY()) {
-            result = Direction.UP.toString();
+            if (point_snake.getY() - 1 != y) {
+                result = Direction.UP.toString();
+            }
         }
 
         if (point_snake.getY() < point_app.getY()) {
-            result = Direction.DOWN.toString();
+            if (point_snake.getY() + 1 != y) {
+                result = Direction.DOWN.toString();
+            }
         }
 
         if (point_app_kek.getX() == point_snake.getX() &&
@@ -77,6 +92,8 @@ public class YourSolver implements Solver<Board> {
                 result = Direction.DOWN.toString();
             }
         }
+
+
 
         return result;
     }

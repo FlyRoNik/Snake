@@ -118,7 +118,7 @@ public class YourSolverTest {
     }
 
     @Test
-    public void testEatkek2() {
+     public void testEatkek2() {
         assertB("☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼" +
                 "☼   ☺ ◄ ☻     ☼" +
                 "☼             ☼" +
@@ -134,6 +134,25 @@ public class YourSolverTest {
                 "☼             ☼" +
                 "☼             ☼" +
                 "☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼", "LEFT");
+    }
+
+    @Test
+    public void testEatkek3() {
+        assertB("☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼ ╘╗   ☻   ☺  ☼" +
+                "☼  ▼           ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼", "RIGHT");
     }
 
 
