@@ -40,32 +40,36 @@ public class YourSolver implements Solver<Board> {
 
         int t = point_snake_body.size();
         if (t > 1) {
-            x = point_snake_body.get(t - 1).getX();
-            y = point_snake_body.get(t - 1).getY();
+            x = point_snake_body.get(1).getX();
+            y = point_snake_body.get(1).getY();
         }
 
         String result = Direction.UP.toString();
 
         if (point_snake.getX() > point_app.getX()) {
-            if (point_snake.getX() - 1 != y) {
+            if (board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.NONE.ch() ||
+                    board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.LEFT.toString();
             }
         }
 
         if (point_snake.getX() < point_app.getX()){
-            if (point_snake.getX() + 1 != y) {
+            if (board.getField()[point_snake.getX()+1][point_snake.getY()] == Elements.GOOD_APPLE.ch() ||
+                    board.getField()[point_snake.getX()+1][point_snake.getY()] == Elements.NONE.ch()) {
                 result =  Direction.RIGHT.toString();
             }
         }
 
         if (point_snake.getY() > point_app.getY()) {
-            if (point_snake.getY() - 1 != y) {
+            if (board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.NONE.ch()||
+                    board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.UP.toString();
             }
         }
 
         if (point_snake.getY() < point_app.getY()) {
-            if (point_snake.getY() + 1 != y) {
+            if (board.getField()[point_snake.getX()][point_snake.getY()+1] == Elements.NONE.ch()||
+                    board.getField()[point_snake.getX()][point_snake.getY()+1] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.DOWN.toString();
             }
         }
