@@ -39,14 +39,16 @@ public class YourSolver implements Solver<Board> {
         int y = point_snake.getY();
 
         int t = point_snake_body.size();
-        if (t > 1) {
+        if (t > 10) {
             x = point_snake_body.get(1).getX();
             y = point_snake_body.get(1).getY();
         }
 
-        String result = Direction.UP.toString();
+        String result = "";
+        char key = 0;
 
         if (point_snake.getX() > point_app.getX()) {
+            key = 'l';
             if (board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.NONE.ch() ||
                     board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.LEFT.toString();
@@ -54,6 +56,7 @@ public class YourSolver implements Solver<Board> {
         }
 
         if (point_snake.getX() < point_app.getX()){
+            key = 'r';
             if (board.getField()[point_snake.getX()+1][point_snake.getY()] == Elements.GOOD_APPLE.ch() ||
                     board.getField()[point_snake.getX()+1][point_snake.getY()] == Elements.NONE.ch()) {
                 result =  Direction.RIGHT.toString();
@@ -61,6 +64,7 @@ public class YourSolver implements Solver<Board> {
         }
 
         if (point_snake.getY() > point_app.getY()) {
+            key = 'u';
             if (board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.NONE.ch()||
                     board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.UP.toString();
@@ -68,36 +72,98 @@ public class YourSolver implements Solver<Board> {
         }
 
         if (point_snake.getY() < point_app.getY()) {
+            key = 'd';
             if (board.getField()[point_snake.getX()][point_snake.getY()+1] == Elements.NONE.ch()||
                     board.getField()[point_snake.getX()][point_snake.getY()+1] == Elements.GOOD_APPLE.ch()) {
                 result = Direction.DOWN.toString();
             }
         }
 
-        if (point_app_kek.getX() == point_snake.getX() &&
-                !(Math.abs(point_app.getY()-point_snake.getY())<Math.abs(point_app.getY()-point_app_kek.getY())) &&
-                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_UP.ch() ||
-                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_DOWN.ch())) {
-            if (board.getField()[point_snake.getX() + 1][point_snake.getY()] != Elements.BREAK.ch() && point_snake.getX() < point_app.getX()) {
-                result = Direction.RIGHT.toString();
-            } else {
-                result = Direction.LEFT.toString();
+//        if (point_app_kek.getX() == point_snake.getX() &&
+//                !(Math.abs(point_app.getY()-point_snake.getY())<Math.abs(point_app.getY()-point_app_kek.getY())) &&
+//                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_UP.ch() ||
+//                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_DOWN.ch())) {
+//            if (board.getField()[point_snake.getX() + 1][point_snake.getY()] != Elements.BREAK.ch() && point_snake.getX() < point_app.getX()) {
+//                result = Direction.RIGHT.toString();
+//            } else {
+//                result = Direction.LEFT.toString();
+//            }
+//        }
+//
+//        if (point_app_kek.getY() == point_snake.getY() &&
+//                !(Math.abs(point_app.getX()-point_snake.getX())<Math.abs(point_app.getX()-point_app_kek.getX())) &&
+//                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_RIGHT.ch() ||
+//                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_LEFT.ch())) {
+//
+//            if (board.getField()[point_snake.getX()][point_snake.getY() - 1] != Elements.BREAK.ch() && point_snake.getY() > point_app.getY()) {
+//                result = Direction.UP.toString();
+//            } else {
+//                result = Direction.DOWN.toString();
+//            }
+//        }
+
+        if (result == "") {
+            switch (key) {
+                case 'l':{
+                    if (board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.NONE.ch()||
+                            board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.GOOD_APPLE.ch()) {
+                        result = Direction.UP.toString();
+                    }else {
+                        if (board.getField()[point_snake.getX()][point_snake.getY() + 1] == Elements.NONE.ch() ||
+                                board.getField()[point_snake.getX()][point_snake.getY() + 1] == Elements.GOOD_APPLE.ch()) {
+                            result = Direction.DOWN.toString();
+                        } else {
+                            result = Direction.RIGHT.toString();
+                        }
+                    }
+                    break;
+                }
+
+                case 'r':{
+                    if (board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.NONE.ch()||
+                            board.getField()[point_snake.getX()][point_snake.getY()-1] == Elements.GOOD_APPLE.ch()) {
+                        result = Direction.UP.toString();
+                    }else {
+                        if (board.getField()[point_snake.getX()][point_snake.getY() + 1] == Elements.NONE.ch() ||
+                                board.getField()[point_snake.getX()][point_snake.getY() + 1] == Elements.GOOD_APPLE.ch()) {
+                            result = Direction.DOWN.toString();
+                        } else {
+                            result = Direction.LEFT.toString();
+                        }
+                    }
+                    break;
+                }
+
+                case 'u':{
+                    if (board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.NONE.ch() ||
+                            board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.GOOD_APPLE.ch()) {
+                        result = Direction.LEFT.toString();
+                    }else {
+                        if (board.getField()[point_snake.getX() + 1][point_snake.getY()] == Elements.GOOD_APPLE.ch() ||
+                                board.getField()[point_snake.getX() + 1][point_snake.getY()] == Elements.NONE.ch()) {
+                            result = Direction.RIGHT.toString();
+                        } else {
+                            result = Direction.DOWN.toString();
+                        }
+                    }
+                    break;
+                }
+                case  'd':{
+                    if (board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.NONE.ch() ||
+                            board.getField()[point_snake.getX()-1][point_snake.getY()] == Elements.GOOD_APPLE.ch()) {
+                        result = Direction.LEFT.toString();
+                    }else {
+                        if (board.getField()[point_snake.getX() + 1][point_snake.getY()] == Elements.GOOD_APPLE.ch() ||
+                                board.getField()[point_snake.getX() + 1][point_snake.getY()] == Elements.NONE.ch()) {
+                            result = Direction.RIGHT.toString();
+                        } else {
+                            result = Direction.UP.toString();
+                        }
+                    }
+                    break;
+                }
             }
         }
-
-        if (point_app_kek.getY() == point_snake.getY() &&
-                !(Math.abs(point_app.getX()-point_snake.getX())<Math.abs(point_app.getX()-point_app_kek.getX())) &&
-                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_RIGHT.ch() ||
-                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_LEFT.ch())) {
-
-            if (board.getField()[point_snake.getX()][point_snake.getY() - 1] != Elements.BREAK.ch() && point_snake.getY() > point_app.getY()) {
-                result = Direction.UP.toString();
-            } else {
-                result = Direction.DOWN.toString();
-            }
-        }
-
-
 
         return result;
     }
