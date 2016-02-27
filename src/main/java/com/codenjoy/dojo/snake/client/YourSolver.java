@@ -27,66 +27,23 @@ public class YourSolver implements Solver<Board> {
     public String get(Board board) {
         this.board = board;
 
-//        Point point = board.getApples().get(0);
-//        point.getX()
-//        point.getY()
+        Point point_app = board.getApples().get(0);
+        Point point_snake = board.getHead();
 
-        char[][] field = board.getField();
-
-        // found snake
-        int snakeHeadX = -1;
-        int snakeHeadY = -1;
-        for (int x = 0; x < field.length; x++) {
-            for (int y = 0; y < field.length; y++) {
-                char ch = field[x][y];
-                if (ch == Elements.HEAD_DOWN.ch() ||
-                    ch == Elements.HEAD_UP.ch() ||
-                    ch == Elements.HEAD_LEFT.ch() ||
-                    ch == Elements.HEAD_RIGHT.ch())
-                {
-                    snakeHeadX = x;
-                    snakeHeadY = y;
-                    break;
-
-                }
-            }
-            if (snakeHeadX != -1) {
-                break;
-            }
-        }
-
-        // нашли змейку
-        int appleX = -1;
-        int appleY = -1;
-        for (int x = 0; x < field.length; x++) {
-            for (int y = 0; y < field.length; y++) {
-                char ch = field[x][y];
-                if (ch == Elements.GOOD_APPLE.ch()) {
-                    appleX = x;
-                    appleY = y;
-                    break;
-
-                }
-            }
-            if (appleX != -1) {
-                break;
-            }
-        }
-
-        int dx = snakeHeadX - appleX;
-        int dy = snakeHeadY - appleY;
-
-        if (dx < 0) {
-            return Direction.RIGHT.toString();
-        }
-        if (dx > 0) {
+        if (point_snake.getX() > point_app.getX()) {
             return Direction.LEFT.toString();
         }
-        if (dy < 0) {
-            return Direction.DOWN.toString();
+
+        if (point_snake.getX() < point_app.getX()){
+            return Direction.RIGHT.toString();
         }
-        if (dy > 0) {
+
+        if (point_snake.getY() > point_app.getY()) {
             return Direction.UP.toString();
+        }
+
+        if (point_snake.getY() < point_app.getY()) {
+            return Direction.DOWN.toString();
         }
 
         return Direction.UP.toString();
