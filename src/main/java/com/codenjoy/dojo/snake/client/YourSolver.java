@@ -56,6 +56,7 @@ public class YourSolver implements Solver<Board> {
         }
 
         if (point_app_kek.getX() == point_snake.getX() &&
+                !(Math.abs(point_app.getY()-point_snake.getY())<Math.abs(point_app.getY()-point_app_kek.getY())) &&
                 (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_UP.ch() ||
                         board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_DOWN.ch())) {
             if (board.getField()[point_snake.getX() + 1][point_snake.getY()] != Elements.BREAK.ch() && point_snake.getX() < point_app.getX()) {
@@ -66,8 +67,10 @@ public class YourSolver implements Solver<Board> {
         }
 
         if (point_app_kek.getY() == point_snake.getY() &&
-        (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_RIGHT.ch() ||
-                board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_LEFT.ch()) ) {
+                !(Math.abs(point_app.getX()-point_snake.getX())<Math.abs(point_app.getX()-point_app_kek.getX())) &&
+                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_RIGHT.ch() ||
+                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_LEFT.ch())) {
+
             if (board.getField()[point_snake.getX()][point_snake.getY() - 1] != Elements.BREAK.ch() && point_snake.getY() > point_app.getY()) {
                 result = Direction.UP.toString();
             } else {
