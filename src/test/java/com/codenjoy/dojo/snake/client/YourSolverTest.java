@@ -42,6 +42,25 @@ public class YourSolverTest {
     }
 
     @Test
+    public void testEatMe() {
+        assertB("☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼╔═════════►  ☼" +
+                "☼╙            ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼             ☼" +
+                "☼        ☺    ☼" +
+                "☼          ☻  ☼" +
+                "☼             ☼" +
+                "☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼", "DOWN");
+    }
+
+    @Test
     public void testNotSameDirection() {
         assertB("☼☼☼☼☼☼" +
                 "☼    ☼" +
