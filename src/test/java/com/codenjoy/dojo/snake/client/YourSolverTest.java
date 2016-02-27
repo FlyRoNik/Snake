@@ -80,6 +80,46 @@ public class YourSolverTest {
     }
 
     @Test
+    public void testEatBreak() {
+        assertB("☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼" +
+                "☼       ☺   ☻  ◄  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼", "DOWN");
+    }
+
+    @Test
+    public void testEatkek1() {
+        assertB("☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼" +
+                "☼       ☺   ☻     ☼" +
+                "☼        ▲      ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼                  ☼" +
+                "☼☼☼☼☼☼☼☼☼☼☼☼☼☼☼", "LEFT");
+    }
+
+
+
+    @Test
     public void testNotSameDirection() {
         assertB("☼☼☼☼☼☼" +
                 "☼ ☻   ☼" +

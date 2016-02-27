@@ -55,12 +55,24 @@ public class YourSolver implements Solver<Board> {
             result = Direction.DOWN.toString();
         }
 
-        if (point_app_kek.getX() == point_snake.getX()) {
-            result = Direction.RIGHT.toString();
+        if (point_app_kek.getX() == point_snake.getX() &&
+                (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_UP.ch() ||
+                        board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_DOWN.ch())) {
+            if (board.getField()[point_snake.getX() + 1][point_snake.getY()] != Elements.BREAK.ch() && point_snake.getX() < point_app.getX()) {
+                result = Direction.RIGHT.toString();
+            } else {
+                result = Direction.LEFT.toString();
+            }
         }
 
-        if (point_app_kek.getY() == point_snake.getY()) {
-            result = Direction.UP.toString();
+        if (point_app_kek.getY() == point_snake.getY() &&
+        (board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_RIGHT.ch() ||
+                board.getField()[point_snake.getX()][point_snake.getY()] == Elements.HEAD_LEFT.ch()) ) {
+            if (board.getField()[point_snake.getX()][point_snake.getY() - 1] != Elements.BREAK.ch() && point_snake.getY() > point_app.getY()) {
+                result = Direction.UP.toString();
+            } else {
+                result = Direction.DOWN.toString();
+            }
         }
 
         return result;
