@@ -9,6 +9,8 @@ import com.codenjoy.dojo.services.Point;
 import com.codenjoy.dojo.services.RandomDice;
 import com.codenjoy.dojo.snake.model.Elements;
 
+import java.util.List;
+
 /**
  * User: your name
  */
@@ -29,24 +31,39 @@ public class YourSolver implements Solver<Board> {
 
         Point point_app = board.getApples().get(0);
         Point point_snake = board.getHead();
+        Point point_app_kek = board.getStones().get(0);
+
+//        List<Point> point_snake_body = board.getSnake();
+
+//        int t = point_snake_body.size();
+
+        String result = Direction.UP.toString();
 
         if (point_snake.getX() > point_app.getX()) {
-            return Direction.LEFT.toString();
+            result = Direction.LEFT.toString();
         }
 
         if (point_snake.getX() < point_app.getX()){
-            return Direction.RIGHT.toString();
+            result =  Direction.RIGHT.toString();
         }
 
         if (point_snake.getY() > point_app.getY()) {
-            return Direction.UP.toString();
+            result = Direction.UP.toString();
         }
 
         if (point_snake.getY() < point_app.getY()) {
-            return Direction.DOWN.toString();
+            result = Direction.DOWN.toString();
         }
 
-        return Direction.UP.toString();
+        if (point_app_kek.getX() == point_snake.getX()) {
+            result = Direction.RIGHT.toString();
+        }
+
+        if (point_app_kek.getY() == point_snake.getY()) {
+            result = Direction.UP.toString();
+        }
+
+        return result;
     }
 
     public static void main(String[] args) {
