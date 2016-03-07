@@ -23,10 +23,15 @@ public class YourSolver implements Solver<Board> {
         this.dice = dice;
     }
 
+    public static void main(String[] args) {
+        start(USER_NAME, WebSocketRunner.Host.REMOTE);
+    }
+
     Direction prior_X = null;
     Direction prior_Y = null;
     Point point_app = null;
     Point point_snake = null;
+
     Point point_snake_r = null;
 
     @Override
@@ -37,20 +42,11 @@ public class YourSolver implements Solver<Board> {
         point_snake = board.getHead();
         point_snake_r = board.getHead();
 
+        //TODO если 2 варианта пути то стоит ли выбирать лучший??
         return rec(Direction.STOP).toString();
     }
 
-    //TODO возврат назад +
-    //TODO при установки ♣ проверить чтоб там нечего не стояло +
-    //TODO если тупик +
-    //TODO возвращатся к последниму ♣ при совпадении с приоритетным направлением +
-    //TODO на не приоритетном направлениии при встрече ♣ - возврат! +
-    //TODO при возврате к ♣  ставить 0 +
-    //TODO возврат результата направления
-    //TODO если 2 варианта пути то стоит ли выбирать лучший??
-    //TODO более 2-х вариантов неприоритетных направлений
     private Direction rec(Direction direct) {
-        outMass();
         if (direct == Direction.STOP) {
             direct = searchLook(board.getField()[point_snake.getX()][point_snake.getY()]);//при первом вхождении
         }else {
@@ -58,9 +54,10 @@ public class YourSolver implements Solver<Board> {
             point_snake.move(point_snake.getX() + direct.changeX(0), point_snake.getY() + direct.changeY(0));
             direct = direct.inverted(); // для исключения направления откуда пришда змейка
         }
+
         outMass();
 
-        boolean flag =false;
+        boolean flag = false;
         if (point_snake.getX() == point_snake_r.getX() && point_snake.getY() == point_snake_r.getY()) {
             flag = true;
         }
@@ -71,59 +68,62 @@ public class YourSolver implements Solver<Board> {
         Direction[] arr_direct = {direct.clockwise(), direct.clockwise().clockwise(),
                 direct.clockwise().clockwise().clockwise()}; //заполняем массив напрвлениями кроме того откуда пришла
 
+        Direction[] arr_PriorDirect = new Direction[0];
         Direction[] arr_NotPriorDirect = new Direction[0];
 
-//        direct = Direction.STOP; // если тупик???
+        for (int i = 0; i < arr_direct.length; i++) {                         //ищем приоритетные направления
+            if (arr_direct[i].equals(prior_X) || arr_direct[i].equals(prior_Y)) {
+                arr_PriorDirect = addToArray(arr_PriorDirect, arr_direct[i]);
+            } else {
+                arr_NotPriorDirect = addToArray(arr_NotPriorDirect, arr_direct[i]);
+            }
+        }
+
+        getProcessArrNotPriorDirect(arr_PriorDirect);
 
         if (!point_snake.itsMe(point_app.copy())) {
-            for (int i = 0; i < arr_direct.length; i++) {                         //ищем приоритетные направления
-                if (arr_direct[i].equals(prior_X) || arr_direct[i].equals(prior_Y)) {       //если нашли
-                    char ch = getCharInDirect(arr_direct[i]);
-                    if (ch == Elements.NONE.ch() || ch == Elements.GOOD_APPLE.ch() || ch == '♣') {         //если можно туда двигаться
-                        if (ch == '♣'){
-                            return null;
-                        }
-
-                        boolean back = setAnchor(arr_direct,arr_direct[i]);   //установка ♣, вернет true если есть хоть одно направление
-                        outMass();
-                        found_prior = true;
-
-                        direct = rec(arr_direct[i]);
-                        outMass();
-
-                        if (direct == Direction.ACT) {
-                            if (flag){
-                                return arr_direct[i];
-                            }
-                            return Direction.ACT;
-                        }
-
-                        if (direct == Direction.STOP) {
-                            point_snake.move(point_snake.getX() + arr_direct[i].inverted().changeX(0), point_snake.getY() + arr_direct[i].inverted().changeY(0));
-                            setCharInDirect(arr_direct[i],'☼');
-                            if (!back){
-                                return Direction.STOP;
-                            }
-                            found_prior = false;
-                            wipeoffAnchor(arr_direct,arr_direct[i]); //стереть ¦
-//                            direct = Direction.STOP; // если тупик???
-                            outMass();
-                        }
-
-                        if (direct == null) {
-                            point_snake.move(point_snake.getX() + arr_direct[i].inverted().changeX(0), point_snake.getY() + arr_direct[i].inverted().changeY(0));
-                            setCharInDirect(arr_direct[i],'☼');
-                            if (!back){
-                                return null;
-                            }
-                            found_prior = false;
-                            wipeoffAnchor(arr_direct,arr_direct[i]); //стереть ¦
-//                            direct = Direction.STOP; // если тупик???
-                            outMass();
-                        }
+            for (int i = 0; i <arr_PriorDirect.length; i++) {                         //ищем приоритетные направления
+                char ch = getCharInDirect(arr_PriorDirect[i]);
+                if (ch == Elements.NONE.ch() || ch == Elements.GOOD_APPLE.ch() || ch == '♣') {         //если можно туда двигаться
+                    if (ch == '♣'){
+                        return null;
                     }
-                }else {
-                    arr_NotPriorDirect = addToArray(arr_NotPriorDirect,arr_direct[i]);
+
+                    boolean back = setAnchor(arr_direct,arr_PriorDirect[i]);   //установка ♣, вернет true если есть хоть одно направление
+                    found_prior = true;
+                    outMass();
+                    direct = rec(arr_PriorDirect[i]);
+                    outMass();
+                    if (direct == Direction.ACT) {
+                        if (flag){
+                            outMass();
+                            return arr_PriorDirect[i];
+                        }
+                        return Direction.ACT;
+                    }
+
+                    if (direct == Direction.STOP) {
+                        point_snake.move(point_snake.getX() + arr_PriorDirect[i].inverted().changeX(0), point_snake.getY() + arr_PriorDirect[i].inverted().changeY(0));
+                        setCharInDirectQ(arr_PriorDirect[i], '☼');
+                        if (!back){
+                            return Direction.STOP;
+                        }
+                        found_prior = false;
+                        wipeoffAnchor(arr_direct, arr_PriorDirect[i]); //стереть ♣
+                    }
+
+                    if (direct == null) {
+                        point_snake.move(point_snake.getX() + arr_PriorDirect[i].inverted().changeX(0), point_snake.getY() + arr_PriorDirect[i].inverted().changeY(0));
+                        //setCharInDirect(arr_direct[i],'☼');
+                        wipeoffLook(arr_PriorDirect[i]);
+                        outMass();
+                        if (!back){
+                            return Direction.STOP;
+                        }
+                        found_prior = false;
+                        wipeoffAnchor(arr_direct, arr_PriorDirect[i]); //стереть ♣
+                        outMass();
+                    }
                 }
             }
 
@@ -137,14 +137,14 @@ public class YourSolver implements Solver<Board> {
                             return null;
                         }
 
-                        if (i == arr_NotPriorDirect.length - 1 || getCharInDirect(arr_NotPriorDirect[i + 1]) != '♣') {
-
-                            boolean back = setAnchor(arr_NotPriorDirect,arr_NotPriorDirect[i]);   //установка ♣, вернет true если есть хоть одно направление
+                          if (i == arr_NotPriorDirect.length - 1 || getCharInDirect(arr_NotPriorDirect[i + 1]) != '♣') {
+                            boolean back = setAnchor(arr_NotPriorDirect, arr_NotPriorDirect[i]);   //установка ♣, вернет true если есть хоть одно направление
                             outMass();
                             direct = rec(arr_NotPriorDirect[i]);
                             outMass();
                             if (direct == Direction.ACT) {
-                                if (flag){
+                                if (flag) {
+                                    outMass();
                                     return arr_NotPriorDirect[i];
                                 }
                                 return Direction.ACT;
@@ -152,44 +152,52 @@ public class YourSolver implements Solver<Board> {
 
                             if (direct == Direction.STOP) {
                                 point_snake.move(point_snake.getX() + arr_NotPriorDirect[i].inverted().changeX(0), point_snake.getY() + arr_NotPriorDirect[i].inverted().changeY(0));
-                                setCharInDirect(arr_NotPriorDirect[i],'☼');
-                                if (!back){
+                                setCharInDirectQ(arr_NotPriorDirect[i], '☼');
+                                if (!back) {
                                     return Direction.STOP;
                                 }
-                                wipeoffAnchor(arr_NotPriorDirect,arr_NotPriorDirect[i]); //стереть ¦
-//                            direct = Direction.STOP; // если тупик???
-                                outMass();
+                                wipeoffAnchor(arr_NotPriorDirect, arr_NotPriorDirect[i]); //стереть ♣
                             }
 
                             if (direct == null) {
                                 point_snake.move(point_snake.getX() + arr_NotPriorDirect[i].inverted().changeX(0), point_snake.getY() + arr_NotPriorDirect[i].inverted().changeY(0));
-                                setCharInDirect(arr_NotPriorDirect[i],'☼');
-                                if (!back){
-                                    return null;
-                                }
-                                wipeoffAnchor(arr_NotPriorDirect,arr_NotPriorDirect[i]); //стереть ¦
-//                            direct = Direction.STOP; // если тупик???
+                                //setCharInDirect(arr_NotPriorDirect[i], '☼');
+                                wipeoffLook(arr_NotPriorDirect[i]);
                                 outMass();
+                                if (!back) {
+                                    return Direction.STOP;
+                                }
+                                wipeoffAnchor(arr_NotPriorDirect, arr_NotPriorDirect[i]); //стереть ♣
                             }
-
+                            outMass();
                         }
-
                     }
                 }
             }
+
         }else {
-            return Direction.ACT; //???
+            return Direction.ACT;
         }
 
         return Direction.STOP;
     }
 
     private void getProcessArrNotPriorDirect(Direction[] arr_NotPriorDirect) {
-        for (int i = 1; i < arr_NotPriorDirect.length; i++) {
-            if (arr_NotPriorDirect[i] == searchLook(getCharInDirect(Direction.STOP)).inverted()) {
-                Direction direct = arr_NotPriorDirect[i];
-                arr_NotPriorDirect[i] = arr_NotPriorDirect[0];
-                arr_NotPriorDirect[0] = direct;
+        if (arr_NotPriorDirect.length < 3) {
+            for (int i = 1; i < arr_NotPriorDirect.length; i++) {
+                if (arr_NotPriorDirect[i] == searchLook(getCharInDirect(Direction.STOP)).inverted()) {
+                    Direction direct = arr_NotPriorDirect[i];
+                    arr_NotPriorDirect[i] = arr_NotPriorDirect[0];
+                    arr_NotPriorDirect[0] = direct;
+                }
+            }
+        }else {
+            for (int i = 0; i < arr_NotPriorDirect.length - 1; i++) {
+                if (arr_NotPriorDirect[i] == searchLook(getCharInDirect(Direction.STOP)).inverted()) {
+                    Direction direct = arr_NotPriorDirect[i];
+                    arr_NotPriorDirect[i] = arr_NotPriorDirect[2];
+                    arr_NotPriorDirect[2] = direct;
+                }
             }
         }
     }
@@ -215,12 +223,16 @@ public class YourSolver implements Solver<Board> {
         return flag;
     }
 
-    private void wipeoffAnchor(Direction []arr_direct, Direction direct) {
+        private void wipeoffAnchor(Direction []arr_direct, Direction direct) {
         for (Direction d : arr_direct) {
             if (!d.equals(direct)) {
-                setCharInDirect(d, ' ');
+                setCharInDirectA(d, ' ');
             }
         }
+    }
+
+    private void wipeoffLook(Direction direct) {
+        board.set(point_snake.getX() + direct.changeX(0), point_snake.getY() + direct.changeY(0), ' ');
     }
 
     private void searchPrior() {
@@ -290,18 +302,31 @@ public class YourSolver implements Solver<Board> {
         return ans;
     }
 
-//    TODO not work!!
     private boolean setCharInDirect(Direction direct, char symbol) {
         char ch = getCharInDirect(direct);
-        if (ch == Elements.NONE.ch() || ch == '►' || ch == '◄' || ch == '▲' || ch == '▼' || ch == '♣') {
+        if (ch == Elements.NONE.ch()) {
             board.set(point_snake.getX() + direct.changeX(0), point_snake.getY() + direct.changeY(0), symbol);
             return true;
         }
         return false;
     }
 
-    public static void main(String[] args) {
-        start(USER_NAME, WebSocketRunner.Host.REMOTE);
+    private boolean setCharInDirectQ(Direction direct, char symbol) {
+        char ch = getCharInDirect(direct);
+        if (ch == Elements.NONE.ch() || ch == '►' || ch == '◄' || ch == '▲' || ch == '▼') {
+            board.set(point_snake.getX() + direct.changeX(0), point_snake.getY() + direct.changeY(0), symbol);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean setCharInDirectA(Direction direct, char symbol) {
+        char ch = getCharInDirect(direct);
+        if (ch == Elements.NONE.ch() || ch == '♣') {
+            board.set(point_snake.getX() + direct.changeX(0), point_snake.getY() + direct.changeY(0), symbol);
+            return true;
+        }
+        return false;
     }
 
     public static void start(String name, WebSocketRunner.Host server) {
