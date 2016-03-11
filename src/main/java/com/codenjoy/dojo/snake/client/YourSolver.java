@@ -64,6 +64,7 @@ public class YourSolver implements Solver<Board> {
 
     private void getTest() {
         System.out.println("Wow");
+        System.out.println("Wow");
     }
 
     private void getExit(Board board) {
