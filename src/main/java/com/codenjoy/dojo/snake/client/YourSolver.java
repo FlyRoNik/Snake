@@ -54,16 +54,11 @@ public class YourSolver implements Solver<Board> {
         Direction direction = searchDirect(Direction.STOP);
         if (direction == Direction.STOP) {
             getExit(board);
-            getTest();
         }
 
 
         assert direction != null;
         return direction.toString();
-    }
-
-    private void getTest() {
-        System.out.println("Wow");
     }
 
     private void getExit(Board board) {
