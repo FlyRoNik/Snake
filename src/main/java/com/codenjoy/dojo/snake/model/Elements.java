@@ -1,6 +1,10 @@
 package com.codenjoy.dojo.snake.model;
 
+import com.codenjoy.dojo.client.Direction;
 import com.codenjoy.dojo.services.CharElements;
+import com.codenjoy.dojo.services.Point;
+import com.codenjoy.dojo.snake.client.Board;
+import com.codenjoy.dojo.snake.client.YourSolver;
 
 /**
  * User: oleksandr.baglai
@@ -18,23 +22,26 @@ public enum Elements implements CharElements {
     HEAD_RIGHT('►'),
     HEAD_UP('▲'),
 
-    TAIL_END_DOWN('╙'),
-    TAIL_END_LEFT('╘'),
-    TAIL_END_UP('╓'),
-    TAIL_END_RIGHT('╕'),
-    TAIL_HORIZONTAL('═'),
-    TAIL_VERTICAL('║'),
-    TAIL_LEFT_DOWN('╗'),
-    TAIL_LEFT_UP('╝'),
-    TAIL_RIGHT_DOWN('╔'),
-    TAIL_RIGHT_UP('╚'),
+    TAIL_END_DOWN('╙',Direction.UP),
+    TAIL_END_LEFT('╘',Direction.RIGHT),
+    TAIL_END_UP('╓',Direction.DOWN),
+    TAIL_END_RIGHT('╕',Direction.LEFT),
+    TAIL_HORIZONTAL('═',Direction.LEFT,Direction.RIGHT),
+    TAIL_VERTICAL('║',Direction.UP,Direction.DOWN),
+    TAIL_LEFT_DOWN('╗',Direction.LEFT,Direction.DOWN),
+    TAIL_LEFT_UP('╝',Direction.UP,Direction.LEFT),
+    TAIL_RIGHT_DOWN('╔',Direction.DOWN,Direction.RIGHT),
+    TAIL_RIGHT_UP('╚',Direction.UP,Direction.RIGHT),
 
     NONE(' ');
 
     final char ch;
+    final Direction[] direction;
 
-    Elements(char ch) {
+    Elements(char ch,Direction ... directions) {
         this.ch = ch;
+        this.direction = new Direction[directions.length];
+        System.arraycopy(directions, 0, this.direction, 0, directions.length);
     }
 
     @Override
@@ -54,5 +61,23 @@ public enum Elements implements CharElements {
             }
         }
         throw new IllegalArgumentException("No such element for " + ch);
+    }
+
+    public Direction[] getDirectionElement(){
+        Direction[] directions = new Direction[this.direction.length];
+        System.arraycopy(this.direction,0,directions,0,this.direction.length);
+        return directions;
+    }
+
+    private Direction[] remove(Direction[] symbols, int index)
+    {
+        if (index >= 0 && index < symbols.length)
+        {
+            Direction[] copy = new Direction[symbols.length-1];
+            System.arraycopy(symbols, 0, copy, 0, index);
+            System.arraycopy(symbols, index+1, copy, index, symbols.length-index-1);
+            return copy;
+        }
+        return symbols;
     }
 }

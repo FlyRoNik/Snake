@@ -13,6 +13,17 @@ import java.util.*;
  */
 public class Board extends AbstractBoard<Elements> {
 
+    public Board(){}
+
+    public Board(char[][] field){
+        this.size = field.length;
+        this.field = new char[field.length][field.length];
+
+        for (int i = 0; i < field[0].length; i++) {
+            System.arraycopy(field[i], 0, this.field[i], 0, field.length);
+        }
+    }
+
     @Override
     public Elements valueOf(char ch) {
         return Elements.valueOf(ch);
@@ -66,6 +77,8 @@ public class Board extends AbstractBoard<Elements> {
         result.add(0, getHead());
         return result;
     }
+
+
 
     @Override
     public String toString() {

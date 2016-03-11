@@ -25,6 +25,7 @@ public class YourSolver implements Solver<Board> {
     private Point point_snake;
     private Point point_snake_copy;
 
+
     public YourSolver(Dice dice) {
         this.dice = dice;
     }
@@ -35,7 +36,7 @@ public class YourSolver implements Solver<Board> {
 
     @Override
     public String get(Board board) {
-        this.board = board;
+        this.board = new Board(board.getField());
 
         point_app = board.getApples().get(0);
         point_snake = board.getHead();
@@ -43,15 +44,29 @@ public class YourSolver implements Solver<Board> {
 
 
 
+//        point_snake_copy.move(point_snake_copy.getX() + Direction.DOWN.changeX(0), point_snake_copy.getY() + Direction.DOWN.changeY(0));
+//        Direction direction = searchDirect(Direction.DOWN);
+
+
+
+
         //TODO если 2 варианта пути то стоит ли выбирать лучший??
         Direction direction = searchDirect(Direction.STOP);
-        String s = Direction.STOP.toString();
-
-        if (direction != null) {
-            s = direction.toString();
+        if (direction == Direction.STOP) {
+            getExit(board);
         }
 
-        return s;
+
+        assert direction != null;
+        return direction.toString();
+    }
+
+    private void getExit(Board board) {
+        Board saveBoard = this.board;
+        this.board = board;
+
+
+
     }
 
     private Direction searchDirect(Direction direct) {
@@ -86,7 +101,7 @@ public class YourSolver implements Solver<Board> {
 
         if (!point_snake.itsMe(point_app.copy())) {
 
-            for (Direction arr : arr_PriorDirect) {                         //ищем приоритетные направления
+            for (Direction arr : arr_PriorDirect) {        //проверяем возможность идти по приоритетным направлениям
 
                 char ch = getCharInDirect(arr);
 
@@ -98,7 +113,7 @@ public class YourSolver implements Solver<Board> {
                 if (direction != null) {return direction;}
             }
 
-            for (Direction arr : arr_NotPriorDirect) {       //ищем куда можно пойти
+            for (Direction arr : arr_NotPriorDirect) {     //проверяем возможность идти по не приоритетным направлениям
 
                 char ch = getCharInDirect(arr);
 
@@ -124,7 +139,6 @@ public class YourSolver implements Solver<Board> {
             boolean back = setAnchor(arr_direct, arr);   //установка ♣, вернет true если есть хоть одно направление
             outMass();
             direct = searchDirect(arr);
-            outMass();
 
             if (direct == Direction.ACT || direct == Direction.STOP || direct == null){
                 moveBack(arr);
@@ -146,12 +160,10 @@ public class YourSolver implements Solver<Board> {
             }
 
             if (direct == null || direct == Direction.STOP) {
-                outMass();
                 if (!back) {
                     return Direction.STOP;
                 }
                 wipeoffAnchor(arr_direct, arr); //стереть ♣
-                outMass();
             }
         }
         return null;
@@ -182,6 +194,15 @@ public class YourSolver implements Solver<Board> {
     }
 
     private void outMass(){
+        for (int i = 0; i < board.getField().length; i++) {
+            for (int j = 0; j < board.getField().length; j++) {
+                System.out.print(board.getField()[j][i]);
+            }
+            System.out.println("");
+        }
+    }
+
+    private void outMass(Board board){
         for (int i = 0; i < board.getField().length; i++) {
             for (int j = 0; j < board.getField().length; j++) {
                 System.out.print(board.getField()[j][i]);
@@ -306,6 +327,19 @@ public class YourSolver implements Solver<Board> {
             return true;
         }
         return false;
+    }
+
+    public Direction[] getDirectionSnake(Point point) {
+        Direction[] directions = new Direction[0];
+        Direction[] pointDirection = board.getAt(point.getX(),point.getY()).getDirectionElement();
+        for (Direction d : pointDirection) {
+            for (Direction p : board.getAt(d.changeX(0), d.changeY(0)).getDirectionElement()) {
+                if (d == p.inverted()) {
+                    addToArray(directions,d);
+                }
+            }
+        }
+        return directions;
     }
 
     public static void start(String name, WebSocketRunner.Host server) {
